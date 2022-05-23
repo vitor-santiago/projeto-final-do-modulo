@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style-home.css">
+    <title>Lista de Recados</title>
+</head>
+
+<body>
+    <button id="sair">SAIR</button>
+    <h1>Meus Recados</h1>
+    <form id="form-cadastro">
+            <input type="text" name="descricao-recado" id="input-descricao" placeholder="Descrição">
+            <input type="text" name="detalhamento-recado" id="input-detalhamento" placeholder="Detalhamento">
+            <input type="submit" value="Salvar" id="btn-salvar">
+    </form>
+     <table id="tabela-registros">
+        <tr>
+            <th>#</th>
+            <th>Descrição</th>
+            <th>Detalhamento</th>
+            <th>Ações</th>
+        </tr>
+        <tbody id="tabela"></tbody>
+    </table>
+    <script src="./js/pagina-home.js"></script>
+</body>
+
+</html>
