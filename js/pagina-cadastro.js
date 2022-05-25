@@ -17,11 +17,15 @@ let regraSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&
 inputEmail.addEventListener("keyup", verificarEmail);
 inputSenha.addEventListener("keyup", verificarSenha);
 inputRepeteSenha.addEventListener("keyup", confirmaSenha);
-formCadastro.addEventListener("submit", verificarInputs);
+formCadastro.addEventListener("submit", (e) => {
+     e.preventDefault();
+
+    verificarInputs();
+});
 
 function verificarEmail() {
     if (inputEmail.value.length < 10) {
-        labelEmail.style.color = "green";
+        labelEmail.style.color = "red";
         labelEmail.innerHTML = "E-mail: * Insira no mínimo 10 caracteres";
         inputEmail.style.border = "0.2px solid black";
         validaEmail = false;
@@ -36,14 +40,16 @@ function verificarEmail() {
 function verificarSenha() {
     let senhaValida = inputSenha.value.match(regraSenha);
 
-    if (inputSenha.value.length < 10) {
-        labelSenha.style.color = "green";
-        labelSenha.innerHTML = "E-mail: * Insira no mínimo 8 caracteres";
+    if (inputSenha.value.length < 8) {
+        labelSenha.style.color = "red";
+        labelSenha.innerHTML = "Senha: * Insira no mínimo 8 caracteres";
         inputSenha.style.border = "0.2px solid black";
-        validaEmail = false;
+        validaSenha = false;
+    
     } else if (senhaValida === null) {
         labelSenha.innerHTML = "Senha: * Deve conter uma letra maiuscula e caracter";
         validaSenha = false;
+    
     } else {
         labelSenha.style.color = "green";
         labelSenha.innerHTML = "Senha";
@@ -53,8 +59,8 @@ function verificarSenha() {
 }
 
 function confirmaSenha() {
-    if (inputRepeteSenha.value !== input) {
-        labelRepeteSenha.style.color = "green";
+    if (inputRepeteSenha.value !== inputSenha.value) {
+        labelRepeteSenha.style.color = "red";
         labelRepeteSenha.innerHTML = "Confirme a senha * As senhas não correspondem";
         inputRepeteSenha.style.border = "0.2px solid black";
         validaRepetirSenha = false;
@@ -66,8 +72,8 @@ function confirmaSenha() {
     }
 }
 
-function verificarInputs(e) {
-    e.preventDefault();
+function verificarInputs() {
+    
     if(
         inputEmail.value === "" ||
         inputSenha.value === "" ||
@@ -75,17 +81,36 @@ function verificarInputs(e) {
     ) {
         alert("Algo deu errado! Por favor verifique se preencheu todos os campos.");
         return
+    
+    } else if (
+        !validaEmail ||
+        !validaSenha ||
+        !validaRepetirSenha
+    ) {
+        alert("Campos incorretos! Por favor verifique se você preencheu todos os campos.");
+        return
+    
     } else {
-        alert("Conta criada com sucesso!");
+       
+        
+        salvaLocalStorage();    
     }
-    salvaLocalStorage();
 }
 
 function salvaLocalStorage() {
+    
     let emailUser = document.querySelector("#emailcadastro").value;
     let senhaUser = inputSenha.value;
     let recadoUsers = [];
-    let listaUsers = buscarListaUser()
+    let listaUsers = buscarListaUser();
+    
+    let existe = listaUsers.some((usuarios) => usuarios.emailUser === emailUser);
+
+    if (existe) {
+        alert(`Usuário ${emailUser} já cadastrado no sistema`);
+        return
+    }
+
     let dadosUser = {
         emailUser,
         senhaUser,
@@ -95,7 +120,9 @@ function salvaLocalStorage() {
     console.log(dadosUser);
     listaUsers.push(dadosUser);
 
-    atualizarUser()
+    atualizarUser(listaUsers)
+
+    alert("Conta criada com sucesso!")
 
     let irLogin = confirm("Deseja ir para a página de login?");
 
@@ -104,10 +131,10 @@ function salvaLocalStorage() {
     }
 
     function buscarListaUser() {
-        return JSON.parse(localStorage.getItem("usuario")) || [];
+        return JSON.parse(localStorage.getItem("usuarios")) || [];
     }
 
-    function atualizarUser() {
-        return window.localStorage.setItem("usuario", JSON.stringify(listaUsers));
+    function atualizarUser(listaUsers) {
+        window.localStorage.setItem("usuarios", JSON.stringify(listaUsers));
     }
 }

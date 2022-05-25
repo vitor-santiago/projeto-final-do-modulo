@@ -93,3 +93,7 @@ input#input-detalhamento {
   margin-left: 50px;
   border-radius: 10px;
 }
+
+button#sair {
+  background-color: red;
+}

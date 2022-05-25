@@ -36,7 +36,8 @@ function verificarUsuario(e) {
 
             alert("Senha incorreta!")
         }
-    }else {
+    
+    } else {
         alert("E-mail incorreto!")
     }
 }

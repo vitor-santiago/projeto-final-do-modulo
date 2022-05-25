@@ -5,7 +5,7 @@ if(!login) {
 }
 
 let formCad = document.querySelector("#form-cadastro");
-let users = JSON.parse(window.localStorage.getItem("usuario"));
+let users = JSON.parse(window.localStorage.getItem("usuarios"));
 let userPosicao = window.sessionStorage.getItem("indexUser")
 let btnSair = document.querySelector("#sair");
 let descricaoInput = document.querySelector("#input-descricao");
@@ -14,11 +14,17 @@ let recadoEditado = null;
 
 mostrarRecados();
 
-formCad.addEventListener("submit", enviarRecado);
+formCad.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    enviarRecado();
+});
 
 btnSair.addEventListener("click", sairLogin);
 
 function enviarRecado() {
+    let listaRecados = buscarListaUser();
+    
     let recado = {
         indice: null,
         descricao: descricaoInput.value,
@@ -26,7 +32,8 @@ function enviarRecado() {
     };
 
     if (recado.descricao !== "" && recado.detalhamento !== "") {
-        users[userPosicao].recadosUser.push(recado);
+        listaRecados.push(recado);
+        users[userPosicao].recadoUser = listaRecados;
 
         atualizarUser()
 
@@ -68,7 +75,7 @@ function mostrarRecados() {
 
             let btnEditar = document.createElement("button");
             btnEditar.setAttribute("class", "btn-editar-apagar btn-editar");
-            btnEditar.setAttribute("onclick", "editarRecado(" + index + ")");
+            btnEditar.setAttribute("onclick", "editarRecado(" + index +")");
             btnEditar.innerText = "Editar";
 
             let btnApagar = document.createElement("button");
@@ -84,7 +91,7 @@ function mostrarRecados() {
             let criarBotoes = criarLinha.appendChild(acaoColuna);
 
             criarBotoes.appendChild(btnEditar);
-            criarBotoes.appendChild(btnApagar)
+            criarBotoes.appendChild(btnApagar);
         }
         return;
     } else {
@@ -115,13 +122,14 @@ function substituirRecado() {
         listaRecados[recadoEditado.indice] = recadoEditado;
         atualizarUser()
         window.location.reload();
+    
     } else{
         descricaoInput.value = "";
         detalhamentoInput.value = "",
         formCad.removeEventListener("submit", substituirRecado);
         formCad.addEventListener("submit", enviarRecado);
     }
-}
+} 
 
 function apagarRecado(indiceDoRecado) {
     let listaRecados = buscarListaUser();
@@ -138,7 +146,7 @@ function apagarRecado(indiceDoRecado) {
 }
 
 function buscarListaUser() {
-    return users[userPosicao].recadoUser;
+    return users[userPosicao].recadoUser || []
 }
 
 function atualizarUser() {
